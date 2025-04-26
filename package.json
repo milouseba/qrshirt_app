@@ -15,10 +15,3 @@
     "tailwindcss": "^4.1.4"
   }
 }
-
-{
-  "private": true,
-  "dependencies": {
-    "@tailwindcss/cli": "^0.12.0"
-  },
-}

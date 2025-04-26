@@ -1,0 +1,27 @@
+<%= form_with(model: @order, local: false) do |form| %>
+  <div>
+    <%= form.label :email %>
+    <%= form.email_field :email %>
+  </div>
+
+  <div>
+    <%= form.label :content_type %>
+    <%= form.select :content_type, ['link', 'image', 'video'], {}, data: { controller: 'content-type' } %>
+  </div>
+
+  <div data-controller="content-type">
+    <div data-content-type-target="link">
+      <%= form.label :content_url, "URL du contenu" %>
+      <%= form.text_field :content_url, data: { action: "input->content-type#update" } %>
+    </div>
+
+    <div data-content-type-target="image">
+      <%= form.label :content_url, "Téléverser une image" %>
+      <%= form.file_field :content_url, data: { action: "input->content-type#update" } %>
+    </div>
+  </div>
+
+  <div>
+    <button type="submit">Envoyer la commande</button>
+  </div>
+<% end %>

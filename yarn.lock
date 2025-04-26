@@ -270,7 +270,7 @@
   resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.2.201.tgz#bfb3da01b3e2462f5a18f372c52dedd7de76037f"
   integrity sha512-wsTdWoZ5EfG5k3t7ORdyQF0ZmDEgN4aVPCanHAiNEwCROqibSZMXXmCbH7IDJUVri4FOeAVwwbPINI7HVHPKBw==
 
-"@tailwindcss/cli@^4.1.4":
+"@tailwindcss/cli@^0.13.9":
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/@tailwindcss/cli/-/cli-4.1.4.tgz#d7fce8043013fc31ca04756db41d3988377b7173"
   integrity sha512-gP05Qihh+cZ2FqD5fa0WJXx3KEk2YWUYv/RBKAyiOg0V4vYVDr/xlLc0sacpnVEXM45BVUR9U2hsESufYs6YTA==

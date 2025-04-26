@@ -11,7 +11,7 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.13",
-    "@tailwindcss/cli": "^0.12.0",
+    "@tailwindcss/cli": "^0.13.9",
     "tailwindcss": "^4.1.4"
   }
 }

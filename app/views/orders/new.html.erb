@@ -1,27 +1,30 @@
-<%= form_with(model: @order, local: false) do |form| %>
-  <div>
-    <%= form.label :email %>
-    <%= form.email_field :email %>
-  </div>
+<%= form_with(model: @order, local: false, class: "max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md space-y-6") do |form| %>
+  <h2 class="text-2xl font-semibold text-gray-800">Nouvelle commande</h2>
 
   <div>
-    <%= form.label :content_type %>
-    <%= form.select :content_type, ['link', 'image', 'video'], {}, data: { controller: 'content-type' } %>
+    <%= form.label :email, class: "block text-sm font-medium text-gray-700" %>
+    <%= form.email_field :email, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
   </div>
 
-  <div data-controller="content-type">
-    <div data-content-type-target="link">
-      <%= form.label :content_url, "URL du contenu" %>
-      <%= form.text_field :content_url, data: { action: "input->content-type#update" } %>
+  <!-- Début du bloc contrôlé par Stimulus -->
+  <div data-controller="content-type" class="space-y-4">
+    <div>
+      <%= form.label :content_type, "Type de contenu", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.select :content_type, ['link', 'image', 'video'], {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm", data: { action: "change->content-type#update" } %>
     </div>
 
-    <div data-content-type-target="image">
-      <%= form.label :content_url, "Téléverser une image" %>
-      <%= form.file_field :content_url, data: { action: "input->content-type#update" } %>
+    <div data-content-type-target="link" class="hidden">
+      <%= form.label :content_url, "URL du contenu", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :content_url, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+
+    <div data-content-type-target="image" class="hidden">
+      <%= form.label :content_url, "Téléverser une image", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.file_field :content_url, class: "mt-1 block w-full text-sm text-gray-500" %>
     </div>
   </div>
 
   <div>
-    <button type="submit">Envoyer la commande</button>
+    <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700">Envoyer la commande</button>
   </div>
 <% end %>

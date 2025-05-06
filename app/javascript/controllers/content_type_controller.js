@@ -1,13 +1,16 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["link", "image"]
 
-  update(event) {
-    const contentType = event.target.value
+  connect() {
+    this.update()
+  }
 
-    // Masquer ou afficher les champs en fonction du type de contenu
-    this.linkTarget.style.display = contentType === 'link' ? 'block' : 'none'
-    this.imageTarget.style.display = contentType === 'image' ? 'block' : 'none'
+  update() {
+    const type = this.element.querySelector("select").value
+
+    this.linkTarget.classList.toggle("hidden", type !== "link")
+    this.imageTarget.classList.toggle("hidden", type !== "image")
   }
 }

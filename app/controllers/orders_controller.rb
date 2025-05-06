@@ -5,29 +5,47 @@ class OrdersController < ApplicationController
 
   def create
     @order = Order.new(order_params)
-    
+  
     if @order.save
-      # Génération du QR Code
+      # 1. Générer le QR code
       qr_code_service = GenerateQrCodeService.new(@order.content_url)
       qr_code_png = qr_code_service.call
-
-      # Sauvegarde du QR code dans ActiveStorage
-      @order.qr_code.attach(io: StringIO.new(qr_code_png), filename: "qr_code.png", content_type: "image/png")
-
-      # Créer la commande Printful
+  
+      # 2. Attacher à ActiveStorage
+      @order.qr_code.attach(
+        io: StringIO.new(qr_code_png),
+        filename: "qr_code.png",
+        content_type: "image/png"
+      )
+  
+      # 3. Uploader vers Printful et créer la commande
       printful_service = PrintfulService.new
-      order_data = {
-        recipient: { email: @order.email },
-        items: [{
-          variant_id: 1, # Assurez-vous d'utiliser un ID de produit Printful valide
-          quantity: 1,
-          files: [{ url: rails_blob_url(@order.qr_code, only_path: true) }]
-        }]
-      }
-      response = printful_service.create_order(order_data)
-
-      # Redirection ou affichage de la confirmation
-      redirect_to order_path(@order), notice: 'Commande envoyée à Printful !'
+      begin
+        file_id = printful_service.upload_qr_code(@order)
+  
+        order_data = {
+          recipient: { email: @order.email },
+          items: [{
+            variant_id: 4012, # Remplace par le bon variant_id
+            quantity: 1,
+            files: [{ id: file_id }],
+            options: [{ id: "placement", value: "front" }]
+          }]
+        }
+  
+        response = printful_service.create_order(order_data)
+        Rails.logger.info("Printful API response: #{response.inspect}")
+  
+        if response['error']
+          flash[:alert] = "Erreur : #{response['error']}"
+          render :new
+        else
+          redirect_to order_path(@order), notice: 'Commande envoyée à Printful !'
+        end
+      rescue => e
+        flash[:alert] = "Erreur lors de la communication avec Printful : #{e.message}"
+        render :new
+      end
     else
       render :new
     end

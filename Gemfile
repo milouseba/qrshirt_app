@@ -55,6 +55,7 @@ gem 'image_processing', '~> 1.2'
 
 # Pour interagir avec l'API Printful
 gem 'faraday'
+gem 'faraday-multipart'
 
 # Pour Active Storage validations (optionnel mais pratique)
 gem 'activestorage-validator'

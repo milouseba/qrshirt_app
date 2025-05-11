@@ -15,4 +15,6 @@ Rails.application.routes.draw do
   end
 
   root to: "orders#new"
+
+  post 'orders/:id/payment_success', to: 'orders#payment_success', as: :payment_success_order
 end

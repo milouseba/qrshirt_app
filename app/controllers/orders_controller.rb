@@ -60,6 +60,22 @@ class OrdersController < ApplicationController
     redirect_to order_path(@order)
   end
 
+  def payment_success
+    @order = Order.find(params[:id])
+    @order.update!(paid: true, paypal_order_id: params[:paypal_order_id])
+  
+    printful_service = PrintfulService.new
+    response = printful_service.confirm_order(@order.id)
+  
+    if response['error']
+      flash[:alert] = "Erreur lors de la confirmation : #{response['error']}"
+    else
+      flash[:notice] = "Commande confirmée avec succès !"
+    end
+
+    redirect_to order_path(@order)
+  end
+
   private
 
   def order_params

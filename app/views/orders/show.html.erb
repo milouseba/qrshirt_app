@@ -29,16 +29,41 @@
         <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
           Commande envoyée à Printful avec succès !
         </div>
-        
-        <%= button_to "Confirmer la commande", confirm_order_path(@order), 
-            method: :post,
-            class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-            data: { confirm: "Êtes-vous sûr de vouloir confirmer cette commande ?" } %>
       </div>
-
+      <div id="paypal-button-container"></div>
       <div class="mt-6">
         <%= link_to "Retour à l'accueil", root_path, class: "text-blue-600 hover:text-blue-800" %>
       </div>
     </div>
   </div>
 </div> 
+
+<script src="https://www.paypal.com/sdk/js?client-id=AT1FR6UK_4gMgnnjrn8xcI9P4QvA61rlId2tfoR2kQG2VJLuXK_1nomM9NCCGKTmmEy_TZKZqqloQotC&currency=EUR"></script>
+<script>
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '<%= 1000 %>'
+          }
+        }]
+      });
+    },
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        // Redirige vers un endpoint Rails pour finaliser la commande
+        fetch("/orders/<%= @order.id %>/payment_success", {
+          method: "POST",
+          headers: {
+            "X-CSRF-Token": "<%= form_authenticity_token %>",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ order_id: "<%= @order.id %>", paypal_order_id: data.orderID })
+        }).then(response => {
+          window.location.href = "/orders/<%= @order.id %>?paid=1";
+        });
+      });
+    }
+  }).render('#paypal-button-container');
+</script>

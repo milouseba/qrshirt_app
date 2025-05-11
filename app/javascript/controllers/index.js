@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import ContentTypeController from "./content_type_controller"
 application.register("content-type", ContentTypeController)
+
+import VariantSelectorController from "./variant_selector_controller"
+application.register("variant-selector", VariantSelectorController)

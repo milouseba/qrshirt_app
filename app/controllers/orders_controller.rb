@@ -9,7 +9,7 @@ class OrdersController < ApplicationController
 
   def create
     @order = Order.new(order_params)
-  
+
     if @order.save
       qrcode_url = GenerateQrCodeService.call(@order, @order.content_url)
   
@@ -26,8 +26,8 @@ class OrdersController < ApplicationController
           country: 'FR',
         },
         items: [{
-          variant_id: 4012, # Remplace par le bon variant_id
-          quantity: 1,
+          variant_id: params[:order][:variant_id], # Remplace par le bon variant_id
+          quantity: @order.quantity,
           files: [{ url: qrcode_url }],
           options: [{ id: "placement", value: "front" }]
         }]
@@ -63,6 +63,6 @@ class OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:email, :content_type, :content_url)
+    params.require(:order).permit(:email, :content_type, :content_url, :quantity)
   end
 end

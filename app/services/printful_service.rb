@@ -5,6 +5,13 @@ require 'json'
 class PrintfulService
   BASE_URL = 'https://api.printful.com'.freeze
   PRODUCT_ID = 71 # ID du t-shirt Unisex dans l'API Printful
+  VARIANTS_IDS = {
+    'White' => { 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015 },
+    'Black' => { 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020 },
+    'Navy' => { 'S' => 4021, 'M' => 4022, 'L' => 4023, 'XL' => 4024, 'XXL' => 4025 },
+    'Blue' => { 'S' => 4026, 'M' => 4027, 'L' => 4028, 'XL' => 4029, 'XXL' => 4030 },
+    'Red' => { 'S' => 4031, 'M' => 4032, 'L' => 4033, 'XL' => 4034, 'XXL' => 4035 }
+  }
 
   def initialize(api_key = ENV['PRINTFUL_API_KEY'])
     @api_key = api_key
@@ -14,48 +21,6 @@ class PrintfulService
       f.adapter Faraday.default_adapter
     end
   end
-
-  # ⬇️ Upload direct d'un fichier binaire
-  def upload_file(file_io, filename, content_type = "image/png")
-    payload = {
-      file: Faraday::Multipart::FilePart.new(file_io, content_type, filename),
-      purpose: "default"
-    }
-
-    response = @conn.post('/files', payload)
-
-    if response.success?
-      json = JSON.parse(response.body)
-      json.dig("result", "id")
-    else
-      raise "Erreur upload fichier Printful : #{response.status} - #{response.body}"
-    end
-  end
-
-  # ⬇️ Upload spécifique du QR code attaché à un modèle Order
-  # def upload_qr_code(record)
-  #   unless record.qr_code_image.attached?
-  #     raise "QR code non attaché à l'enregistrement"
-  #   end
-
-  #   response = @conn.post('/files') do |req|
-  #     req.headers['Authorization'] = "Bearer #{@api_key}"
-  #     req.headers['Content-Type'] = 'multipart/form-data'
-  #     req.body = {
-  #       file: Faraday::UploadIO.new(
-  #         StringIO.new(record.qr_code_image.download),
-  #         'image/png',
-  #         'qr_code.png'
-  #       )
-  #     }
-  #   end
-
-  #   if response.success?
-  #     JSON.parse(response.body)['result']['id']
-  #   else
-  #     raise "Erreur upload fichier Printful : #{response.status} - #{response.body}"
-  #   end
-  # end
 
   # ⬇️ Envoi d'une commande Printful
   def create_order(order_data)
@@ -98,23 +63,7 @@ class PrintfulService
     { 'error' => "Une erreur inattendue est survenue : #{e.message}" }
   end
 
-  private
 
-  def upload_image(image)
-    response = @conn.post('/files') do |req|
-      req.headers['Authorization'] = "Bearer #{@api_key}"
-      req.headers['Content-Type'] = 'multipart/form-data'
-      req.body = {
-        file: Faraday::UploadIO.new(
-          StringIO.new(image.download),
-          'image/png',
-          'qr_code.png'
-        )
-      }
-    end
-
-    JSON.parse(response.body)['result']['url']
-  end
 
   def get_variant_id(color, size)
     # Mapping des couleurs et tailles aux variant_ids de Printful

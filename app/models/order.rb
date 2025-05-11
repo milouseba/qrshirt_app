@@ -4,4 +4,5 @@ class Order < ApplicationRecord
   validates :email, presence: true
   validates :content_type, inclusion: { in: ['link', 'image', 'video'] }
   validates :content_url, presence: true
+  validates :quantity, presence: true, numericality: { greater_than: 0 }
 end

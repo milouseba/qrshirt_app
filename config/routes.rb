@@ -17,4 +17,6 @@ Rails.application.routes.draw do
   root to: "orders#new"
 
   post 'orders/:id/payment_success', to: 'orders#payment_success', as: :payment_success_order
+
+  post 'webhooks/shopify_order_paid', to: 'webhooks#shopify_order_paid'
 end

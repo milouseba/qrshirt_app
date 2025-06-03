@@ -11,14 +11,14 @@ class ShopifyService
   def call
     return :unauthorized unless verified?
 
-    # create order unless it already exists
-    create_order unless order_exists?
+    return if order_exists?
+
+    create_order
 
     # generate dynamic QR code with or without a link/image/video
 
-    # send asset to Printful and create order
 
-    :ok
+    # send asset to Printful and create order
   end
 
   attr_reader :request_body, :request_headers

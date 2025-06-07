@@ -3,7 +3,7 @@ class WebhooksController < ApplicationController
 
   def shopify_order_paid
     request.body.rewind
-
+    puts 'helo'
     ShopifyService.call(request.body.read, request.headers)
   end
 end

@@ -42,11 +42,11 @@ class ShopifyService
 
   def create_order
     response = JSON.parse(request_body)
-
+    
     Order.create!(
       shopify_id: response['id'],
       quantity: response['line_items'][0]['quantity'],
-      size: response['line_items'][0]['variant_title'],
+      size: response['line_items'][0]['variant_title'] || 'M',
       email: response['email'],
       content_type: 'link',
       content_url: 'www.example.com',

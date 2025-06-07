@@ -1,4 +1,10 @@
 class OrdersController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
+  def shopify_order
+    puts response.body
+  end
+
   def new
     @order = Order.new(email: 'milouseba@gmail.com', content_url: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/PNG_Test.png')
   end

@@ -11,12 +11,14 @@ class ShopifyService
   def call
     return :unauthorized unless verified?
 
-    return if order_exists?
+    response = JSON.parse(request_body)
+    return if order_exists?(response)
 
-    create_order
+    new_order = create_order(response)
 
-    # generate dynamic QR code with or without a link/image/video
-
+    # generate dynamic QR code
+    qr_code_id = HovercodeService.new(new_order.content_url).create_qr_code
+    new_order.update!(qr_code_id:)
 
     # send asset to Printful and create order
   end
@@ -36,13 +38,11 @@ class ShopifyService
     ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, hmac_header)
   end
 
-  def order_exists?
-    !!Order.find_by(shopify_id: JSON.parse(request_body)['id'])
+  def order_exists?(response)
+    !!Order.find_by(shopify_id: response['id'])
   end
 
-  def create_order
-    response = JSON.parse(request_body)
-
+  def create_order(response)
     Order.create!(
       shopify_id: response['id'],
       quantity: response['line_items'][0]['quantity'],

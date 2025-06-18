@@ -65,7 +65,7 @@ gem 'aws-sdk-s3', require: false
 gem 'omniauth'
 gem 'omniauth-oauth2'
 
-
+gem 'rest-client'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

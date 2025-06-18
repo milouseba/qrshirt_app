@@ -12,6 +12,9 @@ Rails.application.routes.draw do
     member do
       post :confirm
     end
+    collection do
+      post :shopify_order
+    end
   end
 
   root to: "orders#new"

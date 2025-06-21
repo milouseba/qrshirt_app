@@ -4,11 +4,7 @@ require 'json'
 class HovercodeService
   ROOT_URL = 'https://hovercode.com/api/v2/'
 
-  def initialize(url)
-    @url = url
-  end
-
-  def create_qr_code
+  def create_qr_code(url)
     endpoint = 'hovercode/create/'
     payload = {
                 workspace: ENV['HOVERCODE_WORKSPACE_ID'],
@@ -23,7 +19,16 @@ class HovercodeService
     end
   end
 
-  attr_reader :url
+  def get_qr_code(qr_code_id)
+    endpoint = "hovercode/#{qr_code_id}"
+
+    begin
+      response = RestClient.get(ROOT_URL + endpoint, headers)
+      JSON.parse(response.body)
+    rescue RestClient::ExceptionWithResponse => e
+      puts "Error: #{e.response}"
+    end
+  end
 
   private
 

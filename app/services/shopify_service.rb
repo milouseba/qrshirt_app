@@ -20,7 +20,28 @@ class ShopifyService
     qr_code_id = HovercodeService.new(new_order.content_url).create_qr_code
     new_order.update!(qr_code_id:)
 
-    # send asset to Printful and create order
+    # send asset to Printful and create + confirm order
+    printful_service = PrintfulService.new
+    order_data = {
+      external_id: new_order.id,
+      recipient: {
+        name: response['shipping_address']['name'],
+        email: new_order.email,
+        address1: response['shipping_adress']['address1'],
+        city: response['shipping_adress']['city'],
+        zip: response['shipping_adress']['zip'],
+        country: response['shipping_adress']['country_code'],
+      },
+      items: [{
+        variant_id: params[:order][:variant_id], # Remplace par le bon variant_id
+        quantity: @order.quantity,
+        files: [{ url: qrcode_url }],
+        options: [{ id: "placement", value: "front" }]
+      }]
+    }
+    response = printful_service.create_order(order_data)
+
+
   end
 
   attr_reader :request_body, :request_headers

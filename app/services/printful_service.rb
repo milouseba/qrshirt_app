@@ -8,9 +8,6 @@ class PrintfulService
   VARIANTS_IDS = {
     'White' => { 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015 },
     'Black' => { 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020 },
-    'Navy' => { 'S' => 4021, 'M' => 4022, 'L' => 4023, 'XL' => 4024, 'XXL' => 4025 },
-    'Blue' => { 'S' => 4026, 'M' => 4027, 'L' => 4028, 'XL' => 4029, 'XXL' => 4030 },
-    'Red' => { 'S' => 4031, 'M' => 4032, 'L' => 4033, 'XL' => 4034, 'XXL' => 4035 }
   }
 
   def initialize(api_key = ENV['PRINTFUL_API_KEY'])
@@ -24,7 +21,7 @@ class PrintfulService
 
   # ⬇️ Envoi d'une commande Printful
   def create_order(order_data)
-    response = @conn.post('/orders?store_id=15916712') do |req|
+    response = @conn.post('/orders?store_id=15916712&confirm=true') do |req|
       req.headers['Authorization'] = "Bearer #{@api_key}"
       req.headers['Content-Type'] = 'application/json'
       req.body = order_data.to_json

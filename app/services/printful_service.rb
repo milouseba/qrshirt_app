@@ -3,11 +3,16 @@ require 'faraday/multipart'
 require 'json'
 
 class PrintfulService
+  VARIANTS_IDS = {
+    'White' => { 'XS' => 9526, 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015, '3XL' => 5294, '4XL' => 5309, '5XL' => 12872},
+    'Black' => { 'XS' => 9527, 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020, '3XL' => 5295, '4XL' => 5310, '5XL' => 12871},
+  }
+
   BASE_URL = 'https://api.printful.com'.freeze
   PRODUCT_ID = 71 # ID du t-shirt Unisex dans l'API Printful
   VARIANTS_IDS = {
-    'White' => { 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015 },
-    'Black' => { 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020 },
+    'White' => { 'XS' => 9526, 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015, '3XL' => 5294, '4XL' => 5309, '5XL' => 12872},
+    'Black' => { 'XS' => 9527, 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020, '3XL' => 5295, '4XL' => 5310, '5XL' => 12871},
   }
 
   def initialize(api_key = ENV['PRINTFUL_API_KEY'])

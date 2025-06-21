@@ -17,7 +17,8 @@ class ShopifyService
     new_order = create_order(response)
 
     # generate dynamic QR code
-    qr_code_id = HovercodeService.new.create_qr_code(new_order.content_url)
+    hovercode_service = HovercodeService.new
+    qr_code_id = hovercode_service.create_qr_code(new_order.content_url)
     new_order.update!(qr_code_id:)
 
     # send asset to Printful and create + confirm order
@@ -27,15 +28,15 @@ class ShopifyService
       recipient: {
         name: response['shipping_address']['name'],
         email: new_order.email,
-        address1: response['shipping_adress']['address1'],
-        city: response['shipping_adress']['city'],
-        zip: response['shipping_adress']['zip'],
-        country: response['shipping_adress']['country_code'],
+        address1: response['shipping_address']['address1'],
+        city: response['shipping_address']['city'],
+        zip: response['shipping_address']['zip'],
+        country: response['shipping_address']['country_code'],
       },
       items: [{
-        variant_id: 6666666666666666666666666666,
+        variant_id: printful_service.variant_id(response['line_items'][0]['sku']),
         quantity: new_order.quantity,
-        files: [{ url: HovercodeService.new.get_qr_code(new_order.qr_code_id)['svg_file'] }],
+        files: [{ url: hovercode_service.get_qr_code(new_order.qr_code_id)['png'] }],
         options: [{ id: "placement", value: "back" }]
       }]
     }

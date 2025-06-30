@@ -22,4 +22,5 @@ Rails.application.routes.draw do
   post 'orders/:id/payment_success', to: 'orders#payment_success', as: :payment_success_order
 
   post 'webhooks/shopify_order_paid', to: 'webhooks#shopify_order_paid'
+  post 'webhooks/printful_order_updated', to: 'webhooks#printful_order_updated'
 end

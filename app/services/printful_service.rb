@@ -62,6 +62,10 @@ class PrintfulService
     { 'error' => "Une erreur inattendue est survenue : #{e.message}" }
   end
 
+  def update_order
+    # fetch webhook and dispatch new order status to Shopify
+  end
+
   def variant_id(sku)
     SKU_TO_VARIANT[sku.to_sym]
   end

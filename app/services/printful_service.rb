@@ -64,6 +64,8 @@ class PrintfulService
 
   def update_order
     # fetch webhook and dispatch new order status to Shopify
+    # find order in DB by external id
+    # update order status with Shopify API
   end
 
   def variant_id(sku)

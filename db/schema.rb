@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_18_084326) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_30_130156) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -54,15 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_18_084326) do
     t.string "shopify_id"
     t.string "size"
     t.string "qr_code_id"
-  end
-
-  create_table "tshirts", force: :cascade do |t|
-    t.string "size", null: false
-    t.string "color", null: false
-    t.string "printful_order_id"
-    t.string "printful_order_status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

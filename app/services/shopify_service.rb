@@ -69,7 +69,7 @@ class ShopifyService
       size: response['line_items'][0]['variant_title'],
       email: response['email'],
       content_type: 'link',
-      content_url: response['line_items'][0]['properties'][0]['custom_url'],
+      content_url: response['line_items'][0]['properties'][0]['value'],
     )
   end
 end

@@ -9,6 +9,13 @@ class HovercodeService
     payload = {
                 workspace: ENV['HOVERCODE_WORKSPACE_ID'],
                 qr_data: url,
+                frame: "circle-viewfinder",
+                pattern: "Diamonds",
+                background_color: "#ffffff",
+                primary_color: "#000000",
+                has_border: true,
+                dynamic: true,
+                generate_png: true,
               }.to_json
 
     begin

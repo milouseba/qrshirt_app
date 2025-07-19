@@ -88,3 +88,38 @@ class OrdersController < ApplicationController
     params.require(:order).permit(:email, :content_type, :content_url, :quantity)
   end
 end
+
+
+# payload example for orders
+# {
+#   "external_id": 1907001,
+#   "recipient": {
+#     "name": "Sebastien Milou",
+#     "email": "milouseba@gmail.com",
+#     "address1": "8 rue du delta",
+#     "city": "Paris",
+#     "zip": "75009",
+#     "country": "FR"
+#   },
+#   "items": 
+#     [{
+#       "variant_id": 11576,
+#       "sync_variant_id": 4893393109,
+#       "quantity": 1,
+#       "files": [
+#         { "url": "https://media.hovercode.com/media/codes/877cba10-b284-4fc1-88d4-250f1e9edd1e_P5i6AWz.png",
+#           "placement": "back",
+#           "position": {
+#             "area_width": 1800,
+#             "area_height": 2400,
+#             "width": 500,
+#             "height": 500,
+#             "top": 300,
+#             "left": 0,
+#             "limit_to_print_area": true
+#           }
+#         }
+#       ],
+#       "options": [{ "id": "placement", "value": "back" }]
+#     }]
+# }

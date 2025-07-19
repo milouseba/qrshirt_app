@@ -360,6 +360,7 @@ DEPENDENCIES
   image_processing (~> 1.2)
   jbuilder
   jsbundling-rails
+  mini_magick
   omniauth
   omniauth-oauth2
   pg (~> 1.1)

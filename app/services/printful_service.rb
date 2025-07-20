@@ -1,6 +1,7 @@
 require 'faraday'
 require 'faraday/multipart'
 require 'json'
+require 'rest-client'
 
 class PrintfulService
   BASE_URL = 'https://api.printful.com'.freeze
@@ -60,6 +61,35 @@ class PrintfulService
     { 'error' => "Délai d'attente dépassé : #{e.message}" }
   rescue StandardError => e
     { 'error' => "Une erreur inattendue est survenue : #{e.message}" }
+  end
+
+  def create_file
+    file_path = Rails.root.join("public", "logo_with_qr.png")
+
+    payload = {
+      files: File.new(file_path, 'rb')  # ✅ ENVOI D'UN ARRAY DE FICHIERS
+    }
+
+    Order.last.qr_code.attach(
+      io: File.new(Rails.root.join("public", "logo_with_qr.png"), 'rb'),
+      filename: "qrcode-#{Order.last.id}.png",
+      content_type: 'image/png'
+    )
+
+    headers = {
+      Authorization: "Bearer #{ENV['PRINTFUL_API_KEY']}"
+    }
+
+    response = RestClient.post("https://api.printful.com/files", payload, headers)
+
+    puts "Status: #{response.code}"
+    puts "Body: #{response.body}"
+    JSON.parse(response.body)
+
+  rescue RestClient::ExceptionWithResponse => e
+    puts "Error: #{e.response.code}"
+    puts "Response: #{e.response.body}"
+    JSON.parse(e.response.body)
   end
 
   def update_order

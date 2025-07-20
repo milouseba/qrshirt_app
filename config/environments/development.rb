@@ -76,4 +76,8 @@ Rails.application.configure do
 
   config.hosts << /.*\.ngrok\.io/
   config.hosts << /.*\.ngrok-free\.app/
+
+  config.after_initialize do
+    Rails.application.routes.default_url_options[:host] = ENV.fetch("APP_HOST", "http://localhost:3000")
+  end
 end

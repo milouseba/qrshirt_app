@@ -18,9 +18,11 @@ class ShopifyService
 
     # generate dynamic QR code
     hovercode_service = HovercodeService.new
-    qr_code_id = hovercode_service.create_qr_code(new_order.content_url)
-    new_order.update!(qr_code_id:)
+    qr_code_payload = hovercode_service.create_qr_code(new_order.content_url)
+    new_order.update!(qr_code_id: qr_code_payload['id'])
 
+    InsertQrCodeInLogoService.call(qr_code_payload['id'], qr_code_payload['png'])
+    printable_image_url = URI.join(ENV['APP_HOST'], "/logo_with_qr_#{qr_code_id}.png").to_s
     # send asset to Printful and create + confirm order
     printful_service = PrintfulService.new
     order_data = {
@@ -36,8 +38,7 @@ class ShopifyService
       items: [{
         variant_id: printful_service.variant_id(response['line_items'][0]['sku']),
         quantity: new_order.quantity,
-        files: [{ url: hovercode_service.get_qr_code(new_order.qr_code_id)['png'] }],
-        options: [{ id: "placement", value: "back" }]
+        files: [{ url: printable_image_url, type: 'back' }],
       }]
     }
     response = printful_service.create_order(order_data)

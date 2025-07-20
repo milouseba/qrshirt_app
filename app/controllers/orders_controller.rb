@@ -52,6 +52,14 @@ class OrdersController < ApplicationController
     end
   end
 
+  def edit_qr_code_destination
+    @order = Order.find_by(id: params[:order_id])
+  end
+
+  def update_qr
+    raise
+  end
+
   def confirm
     @order = Order.find(params[:id])
     printful_service = PrintfulService.new

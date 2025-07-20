@@ -20,7 +20,7 @@ class HovercodeService
 
     begin
       response = RestClient.post(ROOT_URL + endpoint, payload, headers)
-      JSON.parse(response.body)['id']
+      JSON.parse(response.body)
     rescue RestClient::ExceptionWithResponse => e
       puts "Error: #{e.response}"
     end

@@ -52,12 +52,12 @@ class OrdersController < ApplicationController
     end
   end
 
-  def edit_qr_code_destination
-    @order = Order.find_by(id: params[:order_id])
-  end
-
   def update_qr
-    raise
+    Order.find_by(email: params[:customer_email], shopify_id: params[:order_id])
+    # raise error unless order exists
+    # update url in Hovercode
+    # update url in Shopify metadata
+    # display success alert
   end
 
   def confirm

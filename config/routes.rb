@@ -11,10 +11,10 @@ Rails.application.routes.draw do
   resources :orders, only: [:new, :create, :show] do
     member do
       post :confirm
-      patch :update_qr
     end
     collection do
       post :shopify_order
+      post :update_qr
     end
   end
 
@@ -24,6 +24,4 @@ Rails.application.routes.draw do
 
   post 'webhooks/shopify_order_paid', to: 'webhooks#shopify_order_paid'
   post 'webhooks/printful_order_updated', to: 'webhooks#printful_order_updated'
-
-  get 'edit_qr_code_destination', to: 'orders#edit_qr_code_destination'
 end

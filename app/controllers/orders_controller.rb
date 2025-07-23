@@ -53,10 +53,13 @@ class OrdersController < ApplicationController
   end
 
   def update_qr
-    Order.find_by(email: params[:customer_email], shopify_id: params[:order_id])
+    order = Order.find_by(email: params[:customer_email], shopify_id: params[:order_id])
     # raise error unless order exists
+    return unless order
     # update url in Hovercode
+    HovercodeService.new.update_qr_code(order.qr_code_id, params[:qr_link])
     # update url in Shopify metadata
+
     # display success alert
   end
 

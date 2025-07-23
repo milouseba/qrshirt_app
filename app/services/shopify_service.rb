@@ -19,7 +19,8 @@ class ShopifyService
     # generate dynamic QR code
     hovercode_service = HovercodeService.new
     qr_code_payload = hovercode_service.create_qr_code(new_order.content_url)
-    new_order.update!(qr_code_id: qr_code_payload['id'])
+    qr_code_id = qr_code_payload['id']
+    new_order.update!(qr_code_id:)
 
     InsertQrCodeInLogoService.call(qr_code_payload['id'], qr_code_payload['png'])
     printable_image_url = URI.join(ENV['APP_HOST'], "/logo_with_qr_#{qr_code_id}.png").to_s

@@ -37,6 +37,22 @@ class HovercodeService
     end
   end
 
+  def update_qr_code(qr_code_id, url)
+    endpoint = "hovercode/#{qr_code_id}/update"
+
+    payload = {
+                workspace: ENV['HOVERCODE_WORKSPACE_ID'],
+                qr_data: url,
+              }.to_json
+
+    begin
+      response = RestClient.put(ROOT_URL + endpoint, payload, headers)
+      JSON.parse(response.body)
+    rescue RestClient::ExceptionWithResponse => e
+      puts "Error: #{e.response}"
+    end
+  end
+
   private
 
   def headers

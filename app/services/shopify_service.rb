@@ -22,7 +22,7 @@ class ShopifyService
     qr_code_id = qr_code_payload['id']
     new_order.update!(qr_code_id:)
 
-    InsertQrCodeInLogoService.call(qr_code_payload['id'], qr_code_payload['png'])
+    InsertQrCodeInLogoService.call(qr_code_id, qr_code_payload['png'])
     printable_image_url = URI.join(ENV['APP_HOST'], "/logo_with_qr_#{qr_code_id}.png").to_s
     # send asset to Printful and create + confirm order
     printful_service = PrintfulService.new
@@ -70,8 +70,6 @@ class ShopifyService
       quantity: response['line_items'][0]['quantity'],
       size: response['line_items'][0]['variant_title'],
       email: response['email'],
-      content_type: 'link',
-      content_url: response['line_items'][0]['properties'][0]['value'],
     )
   end
 end

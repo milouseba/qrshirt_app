@@ -23,5 +23,15 @@ module QrshirtApp
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    ShopifyAPI::Context.setup(
+      api_key: ENV['SHOPIFY_API_KEY'],
+      api_secret_key: ENV['SHOPIFY_API_SECRET_KEY'],
+      host: "https://kq0fjv-vb.myshopify.com",
+      scope: "read_orders, write_orders, write_order_edits, read_order_edits",
+      is_embedded: false,
+      api_version: "2025-04", # The version of the API you would like to use
+      is_private: false, # Set to true if you have an existing private app
+    )
   end
 end

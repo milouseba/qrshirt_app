@@ -23,7 +23,7 @@ class ShopifyService
     new_order.update!(qr_code_id:)
 
     InsertQrCodeInLogoService.call(new_order, qr_code_id, qr_code_payload['png'])
-    printable_image_url = URI.join(ENV['APP_HOST'], "/logo_with_qr_#{qr_code_id}.png").to_s
+    printable_image_url = Rails.application.routes.url_helpers.rails_blob_url(new_order.qr_code, only_path: false)
     # send asset to Printful and create + confirm order
     printful_service = PrintfulService.new
     order_data = {
@@ -74,7 +74,6 @@ class ShopifyService
     )
   end
 end
-
 
 # Shopify payload example
 

@@ -26,7 +26,7 @@ class InsertQrCodeInLogoService
       result.write(file.path)
       file.rewind
 
-      order.qr_code_file.attach(
+      order.qr_code_id.attach(
         io: file,
         filename: "logo_with_qr_#{qr_code_id}.png",
         content_type: "image/png"

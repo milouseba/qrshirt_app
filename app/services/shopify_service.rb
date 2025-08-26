@@ -68,7 +68,6 @@ class ShopifyService
     Order.create!(
       shopify_id: response['id'],
       quantity: response['line_items'][0]['quantity'],
-      size: response['line_items'][0]['variant_title'],
       email: response['email'],
       content_url: response['line_items'][0]['properties'][0]['value'],
     )

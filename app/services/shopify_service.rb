@@ -65,12 +65,22 @@ class ShopifyService
   end
 
   def create_order(response)
-    Order.create!(
+    order = Order.create!(
       shopify_id: response['id'],
       quantity: response['line_items'][0]['quantity'],
       email: response['email'],
-      content_url: response['line_items'][0]['properties'][0]['value'],
+      content_url: response['line_items'][0]['properties'][0].values.last,
     )
+
+      # TODO - attach user uploaded file to order as qr code mapping
+      # file_url = response['line_items'][0]['properties'][1].values.last
+      # return unless file_url
+
+      # order.qr_code_mapping.attach(
+      #   io: file_url,
+      #   filename: "qrcode-mapping-#{order.id}"
+      # )
+
   end
 end
 

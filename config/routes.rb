@@ -24,4 +24,6 @@ Rails.application.routes.draw do
 
   post 'webhooks/shopify_order_paid', to: 'webhooks#shopify_order_paid'
   post 'webhooks/printful_order_updated', to: 'webhooks#printful_order_updated'
+
+  get 'flash/:id', to: 'orders#flash_qr_code', as: :flash_qr_code
 end

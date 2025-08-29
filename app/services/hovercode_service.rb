@@ -4,11 +4,11 @@ require 'json'
 class HovercodeService
   ROOT_URL = 'https://hovercode.com/api/v2/'
 
-  def create_qr_code(url)
+  def create_qr_code(shopify_id)
     endpoint = 'hovercode/create/'
     payload = {
                 workspace: ENV['HOVERCODE_WORKSPACE_ID'],
-                qr_data: url,
+                qr_data: Rails.application.routes.url_helpers.flash_qr_code_url(shopify_id),
                 frame: "circle-viewfinder",
                 pattern: "Diamonds",
                 background_color: "#ffffff",

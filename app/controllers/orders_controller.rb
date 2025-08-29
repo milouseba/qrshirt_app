@@ -1,6 +1,8 @@
 class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  STOREFRONT_URL = 'https://kq0fjv-vb.myshopify.com/'
+
   def shopify_order
     puts response.body
   end
@@ -50,6 +52,14 @@ class OrdersController < ApplicationController
     else
       render :new
     end
+  end
+
+  def flash_qr_code
+    order = Order.find_by(shopify_id: params[:id])
+
+    # TODO: add a failsafe if no order is found (redirect to storefront for instance)
+
+    redirect_to order.content_url || order.qr_code_mapping.url || STOREFRONT_URL, allow_other_host: true
   end
 
   def update_qr

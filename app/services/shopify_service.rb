@@ -18,7 +18,7 @@ class ShopifyService
 
     # generate dynamic QR code
     hovercode_service = HovercodeService.new
-    qr_code_payload = hovercode_service.create_qr_code(new_order.content_url)
+    qr_code_payload = hovercode_service.create_qr_code(new_order.shopify_id)
     qr_code_id = qr_code_payload['id']
     new_order.update!(qr_code_id:)
 
@@ -69,18 +69,20 @@ class ShopifyService
       shopify_id: response['id'],
       quantity: response['line_items'][0]['quantity'],
       email: response['email'],
-      content_url: response['line_items'][0]['properties'][0].values.last,
+      content_url: response['line_items'][0]['properties'][0].values.last.presence,
     )
 
-      # TODO - attach user uploaded file to order as qr code mapping
-      # file_url = response['line_items'][0]['properties'][1].values.last
-      # return unless file_url
+    file_url = response['line_items'][0]['properties'][1].values.last.presence
+    return unless file_url
 
-      # order.qr_code_mapping.attach(
-      #   io: file_url,
-      #   filename: "qrcode-mapping-#{order.id}"
-      # )
+    file = URI.open file_url
 
+    order.qr_code_mapping.attach(
+      io: file,
+      filename: "qrcode-mapping-#{order.id}"
+    )
+
+    order
   end
 end
 

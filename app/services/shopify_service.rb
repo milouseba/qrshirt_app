@@ -79,7 +79,8 @@ class ShopifyService
 
     order.qr_code_mapping.attach(
       io: file,
-      filename: "qrcode-mapping-#{order.id}"
+      filename: "qrcode-mapping-#{order.id}.#{file_url.split('.').last}",
+      content_type: file.content_type
     )
 
     order

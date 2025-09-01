@@ -59,18 +59,28 @@ class OrdersController < ApplicationController
 
     # TODO: add a failsafe if no order is found (redirect to storefront for instance)
 
-    redirect_to order.content_url || order.qr_code_mapping.url || STOREFRONT_URL, allow_other_host: true
+    redirect_to order.content_url || rails_blob_url(order.qr_code_mapping, disposition: "inline") || STOREFRONT_URL, allow_other_host: true
   end
 
   def update_qr
     order = Order.find_by(email: params[:customer_email], shopify_id: params[:order_id])
-    # raise error unless order exists
     return unless order
-    # update url in Hovercode
-    HovercodeService.new.update_qr_code(order.qr_code_id, params[:qr_link])
-    # update url in Shopify metadata
+# raise
+    order.update!(content_url: params[:qr_link].presence)
+    order.qr_code_mapping.purge
 
-    # display success alert
+    if params[:qr_file].presence
+      file = URI.open(params[:qr_file])
+
+      order.qr_code_mapping.attach(
+        io: file,
+        filename: "qrcode-mapping-#{order.id}.#{params[:qr_file].original_filename.split('.').last}",
+        content_type: params[:qr_file].content_type
+      )
+    end
+    # TODO: update url in Shopify metadata
+
+    # TODO: display success alert
   end
 
   def confirm

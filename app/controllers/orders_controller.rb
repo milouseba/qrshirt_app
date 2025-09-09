@@ -66,7 +66,7 @@ class OrdersController < ApplicationController
     order = Order.find_by(email: params[:customer_email], shopify_id: params[:order_id])
     return unless order
 # raise
-    order.update!(content_url: params[:qr_link].presence)
+    order.update!(content_url: params[:qr_url].presence)
     order.qr_code_mapping.purge
 
     if params[:qr_file].presence
@@ -78,8 +78,6 @@ class OrdersController < ApplicationController
         content_type: params[:qr_file].content_type
       )
     end
-    # TODO: update url in Shopify metadata
-
     # TODO: display success alert
   end
 

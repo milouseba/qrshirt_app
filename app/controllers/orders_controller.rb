@@ -59,13 +59,13 @@ class OrdersController < ApplicationController
 
     # TODO: add a failsafe if no order is found (redirect to storefront for instance)
 
-    redirect_to order.content_url || rails_blob_url(order.qr_code_mapping, disposition: "inline") || STOREFRONT_URL, allow_other_host: true
+    redirect_to order.content_url || (order.qr_code_mapping.attached? ? rails_blob_url(order.qr_code_mapping, disposition: "inline") : nil) || STOREFRONT_URL, allow_other_host: true
   end
 
   def update_qr
     order = Order.find_by(email: params[:customer_email], shopify_id: params[:order_id])
     return unless order
-# raise
+
     order.update!(content_url: params[:qr_url].presence)
     order.qr_code_mapping.purge
 

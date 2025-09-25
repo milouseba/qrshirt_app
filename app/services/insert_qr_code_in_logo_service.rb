@@ -12,14 +12,15 @@ class InsertQrCodeInLogoService
   end
 
   def call
-    logo = MiniMagick::Image.open("app/assets/images/logo_blanc.png")
+    logo = MiniMagick::Image.open("app/assets/images/logo_full_black.png")
     qr_code_image = MiniMagick::Image.read(URI.open(qr_code_url))
 
-    qr_code_image.resize "535x535"
+    qr_code_image.resize "700"
+    qr_code_image.crop('620x620+0+0')
 
     result = logo.composite(qr_code_image) do |c|
       c.compose "Over"
-      c.geometry "+390+680"
+      c.geometry "+85+85"
     end
 
     Tempfile.create(["logo_with_qr_#{qr_code_id}", ".png"]) do |file|

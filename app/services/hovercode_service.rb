@@ -9,11 +9,11 @@ class HovercodeService
     payload = {
                 workspace: ENV['HOVERCODE_WORKSPACE_ID'],
                 qr_data: Rails.application.routes.url_helpers.flash_qr_code_url(shopify_id),
-                frame: "circle-viewfinder",
-                pattern: "Diamonds",
+                frame: "round-frame",
+                error_correction: 'H',
                 background_color: "#ffffff",
                 primary_color: "#000000",
-                has_border: true,
+                has_border: false,
                 dynamic: true,
                 generate_png: true,
               }.to_json

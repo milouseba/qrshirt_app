@@ -11,7 +11,6 @@ class HovercodeService
                 qr_data: Rails.application.routes.url_helpers.flash_qr_code_url(shopify_id),
                 frame: "round-frame",
                 error_correction: 'H',
-                background_color: "#ffffff",
                 primary_color: "#000000",
                 has_border: false,
                 dynamic: true,

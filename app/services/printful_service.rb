@@ -5,13 +5,17 @@ require 'rest-client'
 
 class PrintfulService
   BASE_URL = 'https://api.printful.com'.freeze
+  SKU_TO_VARIANT = {
+    '9733786_11576': 4011, '9733786_11577': 4012, '9733786_11578': 4013, '9733786_11579': 4014, '9733786_11580': 4015,
+    '2908023_11546': 4016, '2908023_11547': 4017, '2908023_11548': 4018, '2908023_11549': 4019, '2908023_11550': 4020,
+  }
+
+  # Not used - can be removed
   PRODUCT_ID = 71 # ID du t-shirt Unisex dans l'API Printful
   VARIANTS_IDS = {
     'White' => { 'XS' => 9526, 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015, '3XL' => 5294, '4XL' => 5309, '5XL' => 12872},
     'Black' => { 'XS' => 9527, 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020, '3XL' => 5295, '4XL' => 5310, '5XL' => 12871},
   }
-
-  SKU_TO_VARIANT = {'9733786_11576': 4011, '9733786_11577': 4012, '9733786_11578': 4013, '9733786_11579': 4014, '9733786_11580': 4015}
 
   def initialize(api_key = ENV['PRINTFUL_API_KEY'])
     @api_key = api_key

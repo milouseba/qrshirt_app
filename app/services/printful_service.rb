@@ -5,16 +5,39 @@ require 'rest-client'
 
 class PrintfulService
   BASE_URL = 'https://api.printful.com'.freeze
-  SKU_TO_VARIANT = {
-    '9733786_11576': 4011, '9733786_11577': 4012, '9733786_11578': 4013, '9733786_11579': 4014, '9733786_11580': 4015,
-    '2908023_11546': 4016, '2908023_11547': 4017, '2908023_11548': 4018, '2908023_11549': 4019, '2908023_11550': 4020,
+
+  SKU_TO_COLOR = {
+    '9733786_11576': 'white',
+    '2908023_11546': 'black',
+    '6060554_11576': 'white',
+    '9664140_11546': 'black',
+    '2210068_10774': 'white',
+    '7011581_10779': 'black',
+    '2195347_10774': 'white',
+    '1211827_10779': 'black',
   }
 
-  # Not used - can be removed
-  PRODUCT_ID = 71 # ID du t-shirt Unisex dans l'API Printful
-  VARIANTS_IDS = {
-    'White' => { 'XS' => 9526, 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015, '3XL' => 5294, '4XL' => 5309, '5XL' => 12872},
-    'Black' => { 'XS' => 9527, 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020, '3XL' => 5295, '4XL' => 5310, '5XL' => 12871},
+  SKU_TO_VERSION = {
+    '9733786_11576': 'signature',
+    '2908023_11546': 'signature',
+    '6060554_11576': 'impact',
+    '9664140_11546': 'impact',
+    '2210068_10774': 'signature',
+    '7011581_10779': 'signature',
+    '2195347_10774': 'impact',
+    '1211827_10779': 'impact',
+  }
+
+  # No longer needed as the Printful variant ID is the Shopify SKU' s last 5 digits
+  SKU_TO_VARIANT = {
+    '9733786_11576': 11576, '9733786_11577': 11577, '9733786_11578': 11578, '9733786_11579': 11579, '9733786_11580': 11580, # white signature tee
+    '2908023_11546': 11546, '2908023_11547': 11547, '2908023_11548': 11548, '2908023_11549': 11549, '2908023_11550': 11550, # black signature tee
+    '6060554_11576': 11576, '6060554_11577': 11577, '6060554_11578': 11578, '6060554_11579': 11579, '6060554_11580': 11580, # white impact tee
+    '9664140_11546': 11546, '9664140_11547': 11547, '9664140_11548': 11548, '9664140_11549': 11549, '9664140_11550': 11550, # black impact tee
+    '2210068_10774': 10774, '2210068_10775': 10775, '2210068_10776': 10776, '2210068_10777': 10777, '2210068_10778': 10778, # white signature hoodie
+    '7011581_10779': 10779, '7011581_10780': 10780, '7011581_10781': 10781, '7011581_10782': 10782, '7011581_10783': 10783, # black signature hoodie
+    '2195347_10774': 10774, '2195347_10775': 10775, '2195347_10776': 10776, '2195347_10777': 10777, '2195347_10778': 10778, # white impact hoodie
+    '1211827_10779': 10779, '1211827_10780': 10780, '1211827_10781': 10781, '1211827_10782': 10782, '1211827_10783': 10783, # black impact hoodie
   }
 
   def initialize(api_key = ENV['PRINTFUL_API_KEY'])
@@ -103,20 +126,14 @@ class PrintfulService
   end
 
   def variant_id(sku)
-    SKU_TO_VARIANT[sku.to_sym]
+    sku.last(5).to_i
   end
 
-  def get_variant_id(color, size)
-    # Mapping des couleurs et tailles aux variant_ids de Printful
-    # Ces IDs doivent être ajustés selon les variants disponibles dans votre compte Printful
-    variants = {
-      'White' => { 'S' => 4011, 'M' => 4012, 'L' => 4013, 'XL' => 4014, 'XXL' => 4015 },
-      'Black' => { 'S' => 4016, 'M' => 4017, 'L' => 4018, 'XL' => 4019, 'XXL' => 4020 },
-      'Navy' => { 'S' => 4021, 'M' => 4022, 'L' => 4023, 'XL' => 4024, 'XXL' => 4025 },
-      'Blue' => { 'S' => 4026, 'M' => 4027, 'L' => 4028, 'XL' => 4029, 'XXL' => 4030 },
-      'Red' => { 'S' => 4031, 'M' => 4032, 'L' => 4033, 'XL' => 4034, 'XXL' => 4035 }
-    }
+  def fabric_color(sku)
+    SKU_TO_COLOR[sku.to_sym]
+  end
 
-    variants[color][size]
+  def version_type(sku)
+    SKU_TO_VERSION[sku.to_sym]
   end
 end

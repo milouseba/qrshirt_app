@@ -18,7 +18,11 @@ class ShopifyService
 
     # generate dynamic QR code
     hovercode_service = HovercodeService.new
-    qr_code_payload = hovercode_service.create_qr_code(new_order.shopify_id)
+
+    # determine version and color
+    sku = response['line_items'][0]['sku']
+
+    qr_code_payload = hovercode_service.create_qr_code(new_order.shopify_id, sku)
     qr_code_id = qr_code_payload['id']
     new_order.update!(qr_code_id:)
 
@@ -37,7 +41,7 @@ class ShopifyService
         country: response['shipping_address']['country_code'],
       },
       items: [{
-        variant_id: printful_service.variant_id(response['line_items'][0]['sku']),
+        variant_id: printful_service.variant_id(sku),
         quantity: new_order.quantity,
         files: [{ url: printable_image_url, type: 'back' }],
       }]

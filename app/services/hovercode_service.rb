@@ -4,14 +4,14 @@ require 'json'
 class HovercodeService
   ROOT_URL = 'https://hovercode.com/api/v2/'
 
-  def create_qr_code(shopify_id)
+  def create_qr_code(shopify_id, sku)
     endpoint = 'hovercode/create/'
     payload = {
                 workspace: ENV['HOVERCODE_WORKSPACE_ID'],
                 qr_data: Rails.application.routes.url_helpers.flash_qr_code_url(shopify_id),
-                frame: "round-frame",
+                frame: frame(sku),
                 error_correction: 'H',
-                primary_color: "#000000",
+                primary_color: primary_color(sku),
                 has_border: false,
                 dynamic: true,
                 generate_png: true,
@@ -45,4 +45,11 @@ class HovercodeService
     }
   end
 
+  def primary_color(sku)
+    PrintfulService.new.fabric_color(sku) == 'white' ? '#000000' : '#ffffff'
+  end
+
+  def frame(sku)
+    PrintfulService.new.version_type(sku) == 'signature' ? 'round-frame' : nil
+  end
 end

@@ -7,25 +7,25 @@ class PrintfulService
   BASE_URL = 'https://api.printful.com'.freeze
 
   SKU_TO_COLOR = {
-    '9733786_11576': 'white',
-    '2908023_11546': 'black',
-    '6060554_11576': 'white',
-    '9664140_11546': 'black',
-    '2210068_10774': 'white',
-    '7011581_10779': 'black',
-    '2195347_10774': 'white',
-    '1211827_10779': 'black',
+    '9733786': 'white',
+    '2908023': 'black',
+    '6060554': 'white',
+    '9664140': 'black',
+    '2210068': 'white',
+    '7011581': 'black',
+    '2195347': 'white',
+    '1211827': 'black',
   }
 
   SKU_TO_VERSION = {
-    '9733786_11576': 'signature',
-    '2908023_11546': 'signature',
-    '6060554_11576': 'impact',
-    '9664140_11546': 'impact',
-    '2210068_10774': 'signature',
-    '7011581_10779': 'signature',
-    '2195347_10774': 'impact',
-    '1211827_10779': 'impact',
+    '9733786': 'signature',
+    '2908023': 'signature',
+    '6060554': 'impact',
+    '9664140': 'impact',
+    '2210068': 'signature',
+    '7011581': 'signature',
+    '2195347': 'impact',
+    '1211827': 'impact',
   }
 
   # No longer needed as the Printful variant ID is the Shopify SKU' s last 5 digits
@@ -130,10 +130,10 @@ class PrintfulService
   end
 
   def fabric_color(sku)
-    SKU_TO_COLOR[sku.to_sym]
+    SKU_TO_COLOR[sku.first(7).to_sym]
   end
 
   def version_type(sku)
-    SKU_TO_VERSION[sku.to_sym]
+    SKU_TO_VERSION[sku.first(7).to_sym]
   end
 end

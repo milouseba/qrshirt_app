@@ -43,7 +43,10 @@ class ShopifyService
       items: [{
         variant_id: printful_service.variant_id(sku),
         quantity: new_order.quantity,
-        files: [{ url: printable_image_url, type: 'back' }],
+        files: [
+          {url: printable_image_url, type: 'back'},
+          {url: "#", type: "label_inside", options: [{id: "template_type",value: "native"}]}
+        ],
       }]
     }
     response = printful_service.create_order(order_data)

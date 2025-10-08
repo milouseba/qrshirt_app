@@ -9,16 +9,18 @@ class HovercodeService
     payload = {
                 workspace: ENV['HOVERCODE_WORKSPACE_ID'],
                 qr_data: Rails.application.routes.url_helpers.flash_qr_code_url(shopify_id),
-                frame: frame(sku),
                 error_correction: 'H',
+                frame: 'round-frame',
                 primary_color: primary_color(sku),
                 has_border: false,
                 dynamic: true,
                 generate_png: true,
-              }.to_json
+              }
+
+    payload.reject! { |key, _value| key == :frame } if impact_version?(sku)
 
     begin
-      response = RestClient.post(ROOT_URL + endpoint, payload, headers)
+      response = RestClient.post(ROOT_URL + endpoint, payload.to_json, headers)
       JSON.parse(response.body)
     rescue RestClient::ExceptionWithResponse => e
       puts "Error: #{e.response}"
@@ -49,7 +51,7 @@ class HovercodeService
     PrintfulService.new.fabric_color(sku) == 'white' ? '#000000' : '#ffffff'
   end
 
-  def frame(sku)
-    PrintfulService.new.version_type(sku) == 'signature' ? 'round-frame' : nil
+  def impact_version?(sku)
+    PrintfulService.new.version_type(sku) == 'impact'
   end
 end

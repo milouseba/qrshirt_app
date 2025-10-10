@@ -45,7 +45,7 @@ class ShopifyService
         quantity: new_order.quantity,
         files: [
           {url: printable_image_url, type: 'back'},
-          {url: "#", type: "label_inside", options: [{id: "template_type",value: "native"}]}
+          {url: ActionController::Base.helpers.image_url('logo_black_short.png', host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type",value: "native"}]}
         ],
       }]
     }

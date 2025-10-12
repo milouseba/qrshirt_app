@@ -21,15 +21,17 @@ class ShopifyService
 
     # determine version and color
     sku = response['line_items'][0]['sku']
+    printful_service = PrintfulService.new
+    version = printful_service.version_type(sku)
+    color = printful_service.fabric_color(sku)
 
     qr_code_payload = hovercode_service.create_qr_code(new_order.shopify_id, sku)
     qr_code_id = qr_code_payload['id']
     new_order.update!(qr_code_id:)
 
-    InsertQrCodeInLogoService.call(new_order, qr_code_id, qr_code_payload['png'])
+    InsertQrCodeInLogoService.call(new_order, qr_code_id, qr_code_payload['png'], version, color)
     printable_image_url = Rails.application.routes.url_helpers.rails_blob_url(new_order.qr_code, only_path: false)
     # send asset to Printful and create + confirm order
-    printful_service = PrintfulService.new
     order_data = {
       external_id: new_order.id,
       recipient: {
@@ -45,6 +47,7 @@ class ShopifyService
         quantity: new_order.quantity,
         files: [
           {url: printable_image_url, type: 'back'},
+          # front image => logo
           {url: ActionController::Base.helpers.image_url('logo_black_short.png', host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type",value: "native"}]}
         ],
       }]

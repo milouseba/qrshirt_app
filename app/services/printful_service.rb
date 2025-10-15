@@ -51,7 +51,7 @@ class PrintfulService
 
   # ⬇️ Envoi d'une commande Printful
   def create_order(order_data)
-    response = @conn.post('/orders?store_id=15916712&confirm=true') do |req|
+    response = @conn.post("/orders?store_id=#{ENV['PRINTFUL_STORE_ID']}&confirm=true") do |req|
       req.headers['Authorization'] = "Bearer #{@api_key}"
       req.headers['Content-Type'] = 'application/json'
       req.body = order_data.to_json
@@ -74,7 +74,6 @@ class PrintfulService
     response = @conn.post("/orders/#{order_id}/confirm") do |req|
       req.headers['Authorization'] = "Bearer #{@api_key}"
       req.headers['Content-Type'] = 'application/json'
-      req.headers['X-Store-Id'] = '15916712'
     end
 
     if response.success?

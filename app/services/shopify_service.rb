@@ -25,7 +25,7 @@ class ShopifyService
     version = printful_service.version_type(sku)
     color = printful_service.fabric_color(sku)
 
-    qr_code_payload = hovercode_service.create_qr_code(new_order.shopify_id, sku)
+    qr_code_payload = hovercode_service.create_qr_code(new_order.reload.shopify_id, sku)
     qr_code_id = qr_code_payload['id']
     new_order.update!(qr_code_id:)
 
@@ -54,7 +54,7 @@ class ShopifyService
 
     if version == 'impact'
       front_asset = color == 'white' ? 'logo_black_short.png' : 'logo_white_short.png'
-      order_data[:items][0][:files] << {url: ActionController::Base.helpers.image_url(front_asset, host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: 'front'},
+      order_data[:items][0][:files] << {url: ActionController::Base.helpers.image_url(front_asset, host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: 'front'}
     end
 
     response = printful_service.create_order(order_data)
@@ -87,8 +87,8 @@ class ShopifyService
       content_url: response['line_items'][0]['properties'][0].values.last.presence,
     )
 
-    file_url = response['line_items'][0]['properties'][1].values.last.presence
-    return unless file_url
+    file_url = response['line_items'][0]['properties'][1]&.values&.last.presence
+    return order unless file_url
 
     file = URI.open file_url
 

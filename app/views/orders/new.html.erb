@@ -11,15 +11,15 @@
     <%= form.select :quantity, (1..100).to_a, {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
   </div>
 
-  <div data-controller="variant-selector" data-variant-selector-variants-value="<%= PrintfulService::VARIANTS_IDS.to_json %>">
+  <div data-controller="variant-selector" data-variant-selector-variants-value="<%# PrintfulService::VARIANTS_IDS.to_json %>">
     <div>
       <%= form.label :color, "Couleur", class: "block text-sm font-medium text-gray-700" %>
-      <%= form.select :color, PrintfulService::VARIANTS_IDS.keys, {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm", data: { action: "change->variant-selector#updateVariantId" } %>
+      <%# form.select :color, PrintfulService::VARIANTS_IDS.keys, {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm", data: { action: "change->variant-selector#updateVariantId" } %>
     </div>
 
     <div>
       <%= form.label :size, "Taille", class: "block text-sm font-medium text-gray-700" %>
-      <%= form.select :size, PrintfulService::VARIANTS_IDS.values.first.keys, {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm", data: { action: "change->variant-selector#updateVariantId" } %>
+      <%# form.select :size, PrintfulService::VARIANTS_IDS.values.first.keys, {}, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm", data: { action: "change->variant-selector#updateVariantId" } %>
     </div>
 
     <%= form.hidden_field :variant_id, data: { variant_selector_target: "variantId" } %>

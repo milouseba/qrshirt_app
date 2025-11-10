@@ -47,7 +47,58 @@ class ShopifyService
         quantity: new_order.quantity,
         files: [
           {url: printable_image_url, type: 'back'},
-          {url: ActionController::Base.helpers.image_url('logo_black_short.png', host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type",value: "native"}]}
+
+      # Signature back hoodie
+      # "position": {
+      #   "area_width": 2000,
+      #   "area_height": 2000,
+      #   "width": 2000,
+      #   "height": 1287,
+      #   "top": 0,
+      #   "left": 0
+      # }
+
+
+      # Signature back t-shirt
+      #       "position": {
+      #   "area_width": 2000,
+      #   "area_height": 2000,
+      #   "width": 2000,
+      #   "height": 1287,
+      #   "top": 500,
+      #   "left": 0
+      # }
+
+
+    # Impact front t-shirt
+    #     {
+    #   "placement": "front",
+    #   "image_url": "https://qrshirt-app-847380a4e9f9.herokuapp.com/assets/logo_black_short-78ff386b313e70ee711113c788dd537f50fc66766e50f7a94106a738285bc074.png",
+    #   "position": {
+    #     "area_width": 2000,
+    #     "area_height": 2000,
+    #     "width": 400,
+    #     "height": 284,
+    #     "top": 300,
+    #     "left": 1400
+    #   }
+    # }
+
+    # Impact front hoodie
+      # {
+      #   "placement": "front",
+      #   "image_url": "https://qrshirt-app-847380a4e9f9.herokuapp.com/assets/logo_black_short-78ff386b313e70ee711113c788dd537f50fc66766e50f7a94106a738285bc074.png",
+      #   "position": {
+      #     "area_width": 2000,
+      #     "area_height": 2000,
+      #     "width": 400,
+      #     "height": 284,
+      #     "top": 500,
+      #     "left": 1400
+      #   }
+
+
+          {url: ActionController::Base.helpers.image_url('logo_black_short.png', host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]}
         ],
       }]
     }

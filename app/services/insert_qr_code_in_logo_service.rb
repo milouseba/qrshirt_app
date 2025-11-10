@@ -27,7 +27,7 @@ class InsertQrCodeInLogoService
     else
 
     # Create a new image with combined height
-    combined_height = logo.height + qr_code_image.height
+    combined_height = logo.height + qr_code_image.height + 100
     max_width = [logo.width, qr_code_image.width].max
 
       # 3. Create a blank canvas using MiniMagick::Tool::Convert
@@ -54,7 +54,7 @@ class InsertQrCodeInLogoService
         # 6. Composite the second image below the first
         result = result.composite(logo) do |c|
           c.compose "Over"
-          c.geometry "+0+#{qr_code_image.height}"
+          c.geometry "+0+#{qr_code_image.height + 100}"
         end
       end
     end

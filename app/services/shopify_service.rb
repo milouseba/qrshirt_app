@@ -98,7 +98,7 @@ class ShopifyService
       #   }
 
 
-          {url: ActionController::Base.helpers.image_url('logo_black_short.png', host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]}
+          {url: ActionController::Base.helpers.image_url(label_inside_image(product_color), host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]}
         ],
       }]
     }
@@ -114,6 +114,10 @@ class ShopifyService
   attr_reader :request_body, :request_headers
 
   private
+
+  def label_inside_image(product_color)
+    product_color == 'white' ? 'logo_black_short_padded.png' : 'logo_white_short_padded.png'
+  end
 
   def verified?
     hmac_header = request_headers['HTTP_X_SHOPIFY_HMAC_SHA256']

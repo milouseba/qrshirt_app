@@ -98,7 +98,7 @@ class ShopifyService
       #   }
 
 
-          {url: ActionController::Base.helpers.image_url(label_inside_image(product_color), host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]}
+          {url: ActionController::Base.helpers.image_url(label_inside_image(color), host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]}
         ],
       }]
     }

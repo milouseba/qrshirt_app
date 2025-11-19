@@ -75,7 +75,11 @@ class ShopifyService
 
   def front_image_file_item_payload(color, article_type)
     front_asset = color == 'white' ? 'logo_black_short.png' : 'logo_white_short.png'
-    position = {"area_width": 1800, "area_height": 2400, "width": 400, "height": 284, "top": article_type == 'hoodie' ? 500 : 300, "left": 1400}
+    if article_type == 'hoodie'
+      position = {"area_width": 2000, "area_height": 2000, "width": 400, "height": 284, "top": 500, "left": 1400}
+    else
+      position = {"area_width": 1800, "area_height": 2400, "width": 400, "height": 284, "top": 300, "left": 1400}
+    end
 
     {url: ActionController::Base.helpers.image_url(front_asset, host: ENV.fetch("APP_HOST")), type: 'front', position:}
   end

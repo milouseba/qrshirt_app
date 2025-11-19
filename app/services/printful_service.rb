@@ -28,6 +28,17 @@ class PrintfulService
     '1211827': 'impact',
   }
 
+  SKU_TO_ARTICLE_TYPE = {
+    '9733786': 't-shirt',
+    '2908023': 't-shirt',
+    '6060554': 't-shirt',
+    '9664140': 't-shirt',
+    '2210068': 'hoodie',
+    '7011581': 'hoodie',
+    '2195347': 'hoodie',
+    '1211827': 'hoodie',
+  }
+
   # No longer needed as the Printful variant ID is the Shopify SKU' s last 5 digits
   SKU_TO_VARIANT = {
     '9733786_11576': 11576, '9733786_11577': 11577, '9733786_11578': 11578, '9733786_11579': 11579, '9733786_11580': 11580, # white signature tee

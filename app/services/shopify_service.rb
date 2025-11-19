@@ -30,7 +30,7 @@ class ShopifyService
     new_order.update!(qr_code_id:)
 
     InsertQrCodeInLogoService.call(new_order, qr_code_id, qr_code_payload['png'], version, color)
-    printable_image_url = Rails.application.routes.url_helpers.rails_blob_url(new_order.qr_code, only_path: false)
+    printable_back_image_url = Rails.application.routes.url_helpers.rails_blob_url(new_order.qr_code, only_path: false)
     # send asset to Printful and create + confirm order
     order_data = {
       external_id: new_order.id,
@@ -45,10 +45,84 @@ class ShopifyService
       items: [{
         variant_id: printful_service.variant_id(sku),
         quantity: new_order.quantity,
-        files: [
-          {url: printable_image_url, type: 'back'},
+        files: files_items_payload(back_image_url, color, version, article_type),
+      }]
+    }
 
-      # Signature back hoodie
+    response = printful_service.create_order(order_data)
+  end
+
+  attr_reader :request_body, :request_headers
+
+  private
+
+  def files_items_payload(back_image_url, color, version, article_type)
+    base_payload = [
+      {url: printable_back_image_url, type: 'back'}.merge(position: back_image_position_payload(version, article_type)),
+      {url: ActionController::Base.helpers.image_url(label_inside_image(color), host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]},
+    ]
+    return base_payload if version == 'signature'
+
+    base_payload << front_image_file_item_payload(color, article_type)
+  end
+
+  def back_image_position_payload(version, article_type)
+    return {} if version == 'impact'
+    
+    {position: {"area_width": 2000, "area_height": 2000, "width": 2000, "height": 1287, "top": article_type == 'hoddie' ? 0 : 500, "left": 0}}
+  end
+
+  def front_image_file_item_payload(color, article_type)
+    front_asset = color == 'white' ? 'logo_black_short.png' : 'logo_white_short.png'
+    position = {"area_width": 2000, "area_height": 2000, "width": 400, "height": 284, "top": article_type == 'hoodie' ? 500 : 300, "left": 1400}
+
+    {url: ActionController::Base.helpers.image_url(front_asset, host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: 'front', position:}
+  end
+
+  def label_inside_image(product_color)
+    product_color == 'white' ? 'logo_black_short_padded.png' : 'logo_white_short_padded.png'
+  end
+
+  def verified?
+    hmac_header = request_headers['HTTP_X_SHOPIFY_HMAC_SHA256']
+    secret = ENV['SHOPIFY_WEBHOOK_SECRET']
+
+    calculated_hmac = Base64.strict_encode64(
+      OpenSSL::HMAC.digest('sha256', secret, request_body)
+    )
+
+    ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, hmac_header)
+  end
+
+  def order_exists?(response)
+    !!Order.find_by(shopify_id: response['id'])
+  end
+
+  def create_order(response)
+    order = Order.create!(
+      shopify_id: response['id'],
+      quantity: response['line_items'][0]['quantity'],
+      email: response['email'],
+      content_url: response['line_items'][0]['properties'][0].values.last.presence,
+    )
+
+    file_url = response['line_items'][0]['properties'][1]&.values&.last.presence
+    return order unless file_url
+
+    file = URI.open file_url
+
+    order.qr_code_mapping.attach(
+      io: file,
+      filename: "qrcode-mapping-#{order.id}.#{file_url.split('.').last}",
+      content_type: file.content_type
+    )
+
+    order
+  end
+end
+
+# C'ets quoi le placement: front? a quoi ca sert?
+# Signature back hoodie
       # "position": {
       #   "area_width": 2000,
       #   "area_height": 2000,
@@ -98,64 +172,7 @@ class ShopifyService
       #   }
 
 
-          {url: ActionController::Base.helpers.image_url(label_inside_image(color), host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]}
-        ],
-      }]
-    }
 
-    if version == 'impact'
-      front_asset = color == 'white' ? 'logo_black_short.png' : 'logo_white_short.png'
-      order_data[:items][0][:files] << {url: ActionController::Base.helpers.image_url(front_asset, host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: 'front'}
-    end
-
-    response = printful_service.create_order(order_data)
-  end
-
-  attr_reader :request_body, :request_headers
-
-  private
-
-  def label_inside_image(product_color)
-    product_color == 'white' ? 'logo_black_short_padded.png' : 'logo_white_short_padded.png'
-  end
-
-  def verified?
-    hmac_header = request_headers['HTTP_X_SHOPIFY_HMAC_SHA256']
-    secret = ENV['SHOPIFY_WEBHOOK_SECRET']
-
-    calculated_hmac = Base64.strict_encode64(
-      OpenSSL::HMAC.digest('sha256', secret, request_body)
-    )
-
-    ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, hmac_header)
-  end
-
-  def order_exists?(response)
-    !!Order.find_by(shopify_id: response['id'])
-  end
-
-  def create_order(response)
-    order = Order.create!(
-      shopify_id: response['id'],
-      quantity: response['line_items'][0]['quantity'],
-      email: response['email'],
-      content_url: response['line_items'][0]['properties'][0].values.last.presence,
-    )
-
-    file_url = response['line_items'][0]['properties'][1]&.values&.last.presence
-    return order unless file_url
-
-    file = URI.open file_url
-
-    order.qr_code_mapping.attach(
-      io: file,
-      filename: "qrcode-mapping-#{order.id}.#{file_url.split('.').last}",
-      content_type: file.content_type
-    )
-
-    order
-  end
-end
 
 # Shopify payload example
 

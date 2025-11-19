@@ -24,6 +24,7 @@ class ShopifyService
     printful_service = PrintfulService.new
     version = printful_service.version_type(sku)
     color = printful_service.fabric_color(sku)
+    article_type = printful_service.article_type(sku)
 
     qr_code_payload = hovercode_service.create_qr_code(new_order.reload.shopify_id, sku)
     qr_code_id = qr_code_payload['id']
@@ -45,7 +46,7 @@ class ShopifyService
       items: [{
         variant_id: printful_service.variant_id(sku),
         quantity: new_order.quantity,
-        files: files_items_payload(back_image_url, color, version, article_type),
+        files: files_items_payload(printable_back_image_url, color, version, article_type),
       }]
     }
 
@@ -58,8 +59,8 @@ class ShopifyService
 
   def files_items_payload(back_image_url, color, version, article_type)
     base_payload = [
-      {url: printable_back_image_url, type: 'back'}.merge(position: back_image_position_payload(version, article_type)),
-      {url: ActionController::Base.helpers.image_url(label_inside_image(color), host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: "label_inside", options: [{id: "template_type", value: "native"}]},
+      {url: back_image_url, type: 'back'}.merge(back_image_position_payload(version, article_type)),
+      {url: ActionController::Base.helpers.image_url(label_inside_image(color), host: ENV.fetch("APP_HOST")), type: "label_inside", options: [{id: "template_type", value: "native"}]},
     ]
     return base_payload if version == 'signature'
 
@@ -76,7 +77,7 @@ class ShopifyService
     front_asset = color == 'white' ? 'logo_black_short.png' : 'logo_white_short.png'
     position = {"area_width": 2000, "area_height": 2000, "width": 400, "height": 284, "top": article_type == 'hoodie' ? 500 : 300, "left": 1400}
 
-    {url: ActionController::Base.helpers.image_url(front_asset, host: ENV.fetch("APP_HOST", "http://localhost:3000")), type: 'front', position:}
+    {url: ActionController::Base.helpers.image_url(front_asset, host: ENV.fetch("APP_HOST")), type: 'front', position:}
   end
 
   def label_inside_image(product_color)

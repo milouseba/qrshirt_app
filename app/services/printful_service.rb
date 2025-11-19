@@ -146,4 +146,8 @@ class PrintfulService
   def version_type(sku)
     SKU_TO_VERSION[sku.first(7).to_sym]
   end
+
+  def article_type(sku)
+    SKU_TO_ARTICLE_TYPE[sku.first(7).to_sym]
+  end
 end

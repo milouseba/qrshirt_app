@@ -70,7 +70,11 @@ class ShopifyService
   def back_image_position_payload(version, article_type)
     return {} if version == 'impact'
     
-    {position: {"area_width": 2000, "area_height": 2000, "width": 2000, "height": 1287, "top": article_type == 'hoddie' ? 0 : 500, "left": 0}}
+    if article_type == 'hoodie'
+      position = {"area_width": 2000, "area_height": 2000, "width": 2000, "height": 1287, "top": 0, "left": 0}
+    else
+      position = {"area_width": 1800, "area_height": 2400, "width": 1800, "height": 1158, "top": 500, "left": 0}
+    end
   end
 
   def front_image_file_item_payload(color, article_type)

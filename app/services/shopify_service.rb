@@ -41,6 +41,7 @@ class ShopifyService
         address1: response['shipping_address']['address1'],
         city: response['shipping_address']['city'],
         zip: response['shipping_address']['zip'],
+        state_code: response['shipping_address']['province_code'],
         country: response['shipping_address']['country_code'],
       },
       items: [{

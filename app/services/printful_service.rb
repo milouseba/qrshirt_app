@@ -71,14 +71,10 @@ class PrintfulService
     if response.success?
       JSON.parse(response.body)
     else
-      { 'error' => "Erreur lors de la création de la commande: #{response.status} - #{response.body}" }
+      Rollbar.error("Printful order creation failed", status: response.status, body: response.body, payload: order_data)
     end
-  rescue Faraday::ConnectionFailed => e
-    { 'error' => "Connexion échouée : #{e.message}" }
-  rescue Faraday::TimeoutError => e
-    { 'error' => "Délai d'attente dépassé : #{e.message}" }
   rescue StandardError => e
-    { 'error' => "Une erreur inattendue est survenue : #{e.message}" }
+    Rollbar.error(e, "Unexpected error while creating Printful order", payload: order_data, body: e.message)
   end
 
   def confirm_order(order_id)
